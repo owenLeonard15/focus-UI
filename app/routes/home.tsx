@@ -16,7 +16,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({ email });
 };
 
-export default function Screen() {
+export default function Home() {
   const { email } = useLoaderData<typeof loader>();
   return (
     <>

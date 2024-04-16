@@ -1,0 +1,259 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  line-height: 1.5;
+  color: white;
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+textarea,
+input,
+button {
+  font-size: 1rem;
+  font-family: inherit;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 0px 1px hsla(0, 0%, 0%, 0.2), 0 1px 2px hsla(0, 0%, 0%, 0.2);
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+textarea:hover,
+input:hover
+ {
+  box-shadow: 0 0px 1px hsla(0, 0%, 0%, 0.6), 0 1px 2px hsla(0, 0%, 0%, 0.2);
+}
+
+button:hover {
+  cursor: pointer;
+}
+button:active {
+  box-shadow: 0 0px 1px hsla(0, 6%, 97%, 0.4);
+  transform: translateY(1px);
+}
+
+/* load screen */
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 1s; /* Adjust timing for the transition effect */
+}
+
+
+.circle {
+  width: 300px; /* Large circle size */
+  height: 300px; /* Large circle size */
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+  animation: grow 3s infinite linear;
+}
+
+@keyframes grow {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.circle.first-screen {
+  width: 30px; /* Small circle size after click */
+  height: 30px; /* Small circle size after click */
+  /* move to the left 200px and stay there*/
+  animation: move 2s infinite;
+}
+
+
+
+.circle.second-screen {
+  width: 30px; /* Small circle size after click */
+  height: 30px; /* Small circle size after click */
+  /* move to the left 200px and stay there*/
+  transform: translate(-50px, 54px);
+  animation: none;
+}
+
+.circle.second-screen:hover {
+  cursor: auto;
+}
+
+.circle.third-screen {
+  width: 30px; /* Small circle size after click */
+  height: 30px; /* Small circle size after click */
+  /* move to the left 200px and stay there*/
+  transform: translate(-50px, 110px);
+  animation: none;
+
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0);
+  }
+  50% {
+    transform: translate(-160px,-36px);
+  }
+  100% {
+    transform: translate(-160px,-36px);
+  }
+}
+
+.circle:hover {
+  cursor: pointer;
+}
+
+.corner-line {
+  position: absolute;
+  width: 50px; /* Line width */
+  height: 10px; /* Line height */
+  background-color: white;
+  transition: all 0.5s; /* Adjust timing for the transition effect */
+}
+
+/* First screen lines */
+.top-left { transform: rotate(-45deg); top: 20px; left: 20px; }
+.top-right { transform: rotate(45deg); top: 20px; right: 20px; }
+.bottom-left { transform: rotate(45deg); bottom: 20px; left: 20px; }
+.bottom-right { transform: rotate(-45deg); bottom: 20px; right: 20px; }
+
+/* Second screen lines */
+.second-screen.top-left { top: 10%; left: 10%; width: 100px; height: 20px; }
+.second-screen.top-right { top: 10%; right: 10%; width: 100px; height: 20px; }
+.second-screen.bottom-left { bottom: 10%; left: 10%; width: 100px; height: 20px; }
+.second-screen.bottom-right { bottom: 10%; right: 10%; width: 100px; height: 20px; }
+/* end load screen */
+
+/* new additions */
+
+/* General styles for the form */
+form {
+  width: 290px;
+  margin: 40px auto;
+  padding: 20px;
+  background: black;
+}
+
+/* Styles for input fields and labels using flexbox */
+form div {
+  display: flex;
+  align-items: center;  /* Aligns items vertically in the center */
+  margin-bottom: 20px;
+}
+
+label {
+  margin-right: 10px;  /* Adds space between the label and the input */
+  font-size: 16px;
+  color: #f9f9f9;
+  white-space: nowrap;  /* Prevents the label from wrapping */
+}
+
+input[type="email"], input[type="password"] {
+  flex-grow: 1;  /* Allows the input to take up the remaining space */
+  padding: 8px;
+  font-size: 14px;
+  color:black;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+}
+
+.fadeIn {
+  animation: fadeIn .2s ;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+input[type="email"]:focus, input[type="password"]:focus {
+  outline: none;
+}
+
+/* Style for the error message */
+div.error {
+  color: #ff0000;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* Styles for the submit button */
+button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color:black;
+  color: #ccc;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+button:hover {
+  background-color: #ccc;
+  color: black;
+}
+
+/* end new additions */
+
+
+
+#search-spinner {
+  width: 1rem;
+  height: 1rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%23000' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M20 4v5h-.582m0 0a8.001 8.001 0 00-15.356 2m15.356-2H15M4 20v-5h.581m0 0a8.003 8.003 0 0015.357-2M4.581 15H9' /%3E%3C/svg%3E");
+  animation: spin 1s infinite linear;
+  position: absolute;
+  left: 0.625rem;
+  top: 0.75rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
