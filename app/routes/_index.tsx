@@ -1,16 +1,25 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { redirect, json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { auth, sessionStorage } from "~/services/auth.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  await auth.authenticate("form", request, {
+  let user = await auth.authenticate("form", request, {
     successRedirect: "/home",
     failureRedirect: "/",
   });
 
+  console.log(user)
+
+  // if (user) {
+  //   return redirect("/home");
+  // } else {
+  //   return redirect("/");
+  // }
+
   // TODO: add animation on success here and redirect to home afterwards
+  
 };
 
 type LoaderError = { message: string } | null;
@@ -73,6 +82,7 @@ export default function Index() {
                 id="email"
                 onFocus={() => setScreenNumber(2)}
                 placeholder="email"
+                style={{paddingLeft: '15px'}}
               />
             </div>
 
@@ -83,6 +93,7 @@ export default function Index() {
                 id="password"
                 onFocus={() => setScreenNumber(3)}
                 placeholder="password"
+                style={{paddingLeft: '15px'}}
               />
             </div>
             {error ? <div>{error.message}</div> : null}
