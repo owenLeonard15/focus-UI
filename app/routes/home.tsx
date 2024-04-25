@@ -2,6 +2,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import { act } from "react-dom/test-utils";
 
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
@@ -9,27 +10,23 @@ import { sessionStorage } from "~/services/session.server";
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const session = await sessionStorage.getSession(request.headers.get("Cookie"));
-
   const actionType = formData.get("_action");
   
-  console.log("FORMDATA: ", formData.keys())
-
   switch (actionType) {
     case "logOut":
-      console.log("LOGGING OUT");
+     
+      session.set("screenNumber", "0"); // Explicitly unset or reset the screenNumber
+      const cookieReset = await sessionStorage.commitSession(session)
       // reset the screen number back to 0 when logging out
-      session.unset("screenNumber"); // Explicitly unset or reset the screenNumber
       await auth.logout(session, {redirectTo: "/"});
-      const cookie = await sessionStorage.commitSession(session);
-      return redirect("/", {
-        headers: {
-          "Set-Cookie": cookie,
-        },
-      });
+      // return redirect("/", {
+      //   headers: {
+      //     "Set-Cookie": cookieReset,
+      //   },
+      // })
     case "incrementScreen":
-      console.log(formData);
       const screenNumber = formData.get("screenNumber");
-      
+      console.log(screenNumber)
       session.set("screenNumber", screenNumber);
       const cookieIncrement = await sessionStorage.commitSession(session);   
       return redirect("/", {
@@ -49,7 +46,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   const session = await sessionStorage.getSession(request.headers.get("Cookie"));
-  const screenNumber = session.get("screenNumber") || 0;
+  console.log("Loaded data: ", session.data)
+  // log session id
+  let screenNumber = session.get("screenNumber") || 0;
+  // if (screenNumber === 0) {
+  //   console.log("screenNumber is 0")
+  //     // wait 2 second before setting screen to 1
+  //     setTimeout(async () => {
+  //       session.set("screenNumber", 1);
+  //       screenNumber = 1;
+  //       const cookieIncrement = await sessionStorage.commitSession(session); 
+  //       redirect("/", {
+  //         headers: {
+  //           "Set-Cookie": cookieIncrement,
+  //         },
+  //       });   
+  //       return json({ screenNumber, email }, {  headers: {  "Set-Cookie": cookieIncrement, }, });
+  //     }, 800);
+  // }
   
   return json({ screenNumber, email });
 };
@@ -63,19 +77,33 @@ export default function Home() {
     setCount(Number(count) + 1);
     fetcher.submit(e.target, {method: "post"});
   }
+
   
   return (
-    <>
-      <h1>Hello {email}</h1>
-      <Form method="post" onSubmit={handleIncrement}>
-        <input type="hidden" name="_action" value="incrementScreen" />
-        <input type="hidden" name="screenNumber" value={Number(count) + 1} />
-        <button type="submit">Increment Screen Number {count} </button>
-      </Form>
-      <Form method="post">
-        <button type="submit" name="_action" value="logOut">Log Out</button>
-      </Form>      
-    </>
+      <div className="split-screen">
+        <div className={`left ${count === 0 ? 'loading' : 'active'}`}>
+            <nav>
+              <h1 style={{color: 'black'}}>Hello {email}</h1>
+              <Form method="post" onSubmit={handleIncrement}>
+                <input type="hidden" name="_action" value="incrementScreen" />
+                <input type="hidden" name="screenNumber" value={Number(count) + 1} />
+                <button type="submit">Increment Screen Number {count} </button>
+              </Form>
+            </nav>
+        </div>
+        <div className="right">
+          <Form className="logOut" method="post">
+            <input type="hidden" name="_action" value="logOut" />
+            <button>Log Out</button>
+          </Form>
+          {/* <div className="content">
+            <h1>Welcome {email}</h1>
+            <h2>Screen Number: {count}</h2>
+            <div className={`circle fourth-screen`}></div>
+
+          </div> */}
+        </div> 
+      </div>    
   );
 }
 

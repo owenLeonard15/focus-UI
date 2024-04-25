@@ -2,7 +2,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { auth, sessionStorage } from "~/services/auth.server";
+import { auth } from "~/services/auth.server";
+import { sessionStorage } from "~/services/session.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let user = await auth.authenticate("form", request, {
@@ -12,11 +13,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   console.log(user)
 
-  // if (user) {
-  //   return redirect("/home");
-  // } else {
-  //   return redirect("/");
-  // }
+  if (user) {
+    return redirect("/home");
+  } else {
+    return redirect("/");
+  }
 
   // TODO: add animation on success here and redirect to home afterwards
   
@@ -43,7 +44,7 @@ export default function Index() {
     setTimeout(() => {
       setScreenNumber(2);
       setLoading(false);
-    }, 2000);
+    }, 800);
   };
 
 
@@ -63,7 +64,7 @@ export default function Index() {
           </div>
         </div>
       : <div className="container">
-          <Form method="post">
+          <Form className="loginForm" method="post">
             <div 
               className={`circle
                 ${screenNumber === 2 

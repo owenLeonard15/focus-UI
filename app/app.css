@@ -124,6 +124,15 @@ button:active {
 
 }
 
+.circle.fourth-screen {
+  width: 30px; /* Small circle size after click */
+  height: 30px; /* Small circle size after click */
+  /* move to the left 200px and stay there*/
+  transform: translate(0px, 0px);
+  animation: none;
+
+}
+
 @keyframes move {
   0% {
     transform: translate(0);
@@ -161,10 +170,53 @@ button:active {
 .second-screen.bottom-right { bottom: 10%; right: 10%; width: 100px; height: 20px; }
 /* end load screen */
 
-/* new additions */
 
-/* General styles for the form */
-form {
+/* main screen: split screen left half white, right half black */
+.split-screen {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* left half of the split screen */
+.left {
+  flex: 1;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: fillScreen 1s;
+}
+.left.active {
+  width: 50vw;
+  animation: none;
+}
+
+@keyframes fillScreen {
+  0% {
+    max-width: 0vw;
+  }
+  100% {
+    max-width: 50vw;
+  }
+  
+}
+
+/* right half of the split screen */
+.right {
+  flex: 1;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* General styles for the loginForm */
+form.loginForm {
   width: 290px;
   margin: 40px auto;
   padding: 20px;
@@ -172,7 +224,7 @@ form {
 }
 
 /* Styles for input fields and labels using flexbox */
-form div {
+form.loginForm div {
   display: flex;
   align-items: center;  /* Aligns items vertically in the center */
   margin-bottom: 20px;
@@ -195,7 +247,7 @@ input[type="email"], input[type="password"] {
 }
 
 .fadeIn {
-  animation: fadeIn .2s ;
+  animation: fadeIn 1.2s ;
 }
 @keyframes fadeIn {
   0% {
@@ -256,4 +308,13 @@ button:hover {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* logout form goes in the top right corner */
+form.logOut {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  background-color: black;
 }

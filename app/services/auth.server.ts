@@ -1,17 +1,7 @@
 import { createCookieSessionStorage } from "@remix-run/node";
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
-
-export const sessionStorage = createCookieSessionStorage({
-  cookie: {
-    name: "__session",
-    httpOnly: true,
-    path: "/",
-    sameSite: "lax",
-    secrets: ["s3cret"], // This should be an env variable
-    secure: process.env.NODE_ENV === "production",
-  },
-});
+import { sessionStorage } from "./session.server";
 
 export const auth = new Authenticator<string>(sessionStorage);
 
