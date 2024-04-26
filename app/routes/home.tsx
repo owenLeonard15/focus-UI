@@ -7,6 +7,8 @@ import { act } from "react-dom/test-utils";
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
 
+import TypingAnimation from '~/components/TypingAnimation';
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const session = await sessionStorage.getSession(request.headers.get("Cookie"));
@@ -97,6 +99,12 @@ const getMonth = (month: number) => {
   }
 }
 
+const lines = [
+  "Hello, welcome to your personal dashboard.",
+  "I am here to help you with your daily activities.",
+  "I can help you with fitness, nutrition, and sleep.",
+];
+
 export default function Home() {
   const { screenNumber, email } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
@@ -148,7 +156,6 @@ export default function Home() {
                 <h2>NUTRITION</h2>
                 <h2>SLEEP</h2>
               </Form>
-              
               {/* <h1 style={{color: 'black'}}>Hello {email}</h1>
               <Form method="post" onSubmit={handleIncrement}>
                 <input type="hidden" name="_action" value="incrementScreen" />
@@ -156,6 +163,9 @@ export default function Home() {
                 <button type="submit">Increment Screen Number {count} </button>
               </Form> */}
             </nav>
+            <div className="text-container">
+              <TypingAnimation lines={lines} />
+            </div>
         </div>
         <div className="right">
           {/* display the date in format of "Weekday Month DD, YYYY*/}

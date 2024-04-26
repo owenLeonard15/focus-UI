@@ -130,6 +130,10 @@ button:active {
   align-self: center;
 }
 
+.circle.fourth-screen:hover {
+  cursor: default;
+}
+
 .circle.fourth-screen.moveandgrow {
   animation: moveandgrow 2.4s 1 forwards;
 }
@@ -248,7 +252,7 @@ button:active {
 /* left half of the split screen */
 .left {
   flex: 1;
-  height: 100vh;
+  min-height: 100vh;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -262,6 +266,7 @@ button:active {
 .left.active {
   animation: none;
   min-width: 60vw;
+  min-height: 100vh;
 }
 
 @keyframes fillScreen {
@@ -429,7 +434,7 @@ form.logOut {
 
 nav {
   width: 100%;
-  margin-top: 2rem;
+  padding-top: 3rem;
 }
 
 .links {
@@ -438,7 +443,6 @@ nav {
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  margin-top: 1rem;
   transition: all 1s;
 }
 
@@ -448,7 +452,25 @@ nav {
 
 
 form h2 {
-  color: black;
+  color: gray;
   font-weight: 300;
   letter-spacing: 2px;
+  font-size: 1.2rem;
 }
+
+form h2:hover {
+  color: black
+}
+
+
+/* typing animation */
+.text-container {
+  display: flex;
+  height: 100%;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-size: 2rem;
+}
+

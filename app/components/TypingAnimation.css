@@ -1,0 +1,12 @@
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  
+  .line {
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 1s forwards;
+  }
+  
