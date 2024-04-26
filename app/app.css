@@ -121,17 +121,36 @@ button:active {
   /* move to the left 200px and stay there*/
   transform: translate(-50px, 110px);
   animation: none;
-
 }
 
 .circle.fourth-screen {
-  width: 30px; /* Small circle size after click */
-  height: 30px; /* Small circle size after click */
-  /* move to the left 200px and stay there*/
-  transform: translate(0px, 0px);
-  animation: none;
-
+  width: 30px; 
+  height: 30px; 
+  justify-self: center;
+  align-self: center;
 }
+
+.circle.fourth-screen.moveandgrow {
+  animation: moveandgrow 2.4s 1 forwards;
+}
+
+.circle.circle.fourth-screen.grown {
+  width: 400px; 
+  height: 400px; 
+  animation: none;
+}
+
+@keyframes moveandgrow {
+  from {
+    width: 30px; 
+    height: 30px; 
+  }
+  to {
+    width: 400px; 
+    height: 400px;
+  }
+}
+
 
 @keyframes move {
   0% {
@@ -152,22 +171,70 @@ button:active {
 .corner-line {
   position: absolute;
   width: 50px; /* Line width */
-  height: 10px; /* Line height */
+  height: 1px; /* Line height */
   background-color: white;
-  transition: all 0.5s; /* Adjust timing for the transition effect */
 }
 
 /* First screen lines */
-.top-left { transform: rotate(-45deg); top: 20px; left: 20px; }
-.top-right { transform: rotate(45deg); top: 20px; right: 20px; }
-.bottom-left { transform: rotate(45deg); bottom: 20px; left: 20px; }
-.bottom-right { transform: rotate(-45deg); bottom: 20px; right: 20px; }
+.top-left1 { transform: rotate(180deg); top: 20px; left: 25px; }
+.top-left2 { transform: rotate(90deg); top: 45px; left: 0px; }
+.top-right1 { transform: rotate(180deg); top: 20px; right: 25px; }
+.top-right2 { transform: rotate(90deg); top: 45px; right: 0px; }
+.bottom-left1 { transform: rotate(180deg); bottom: 20px; left: 25px; }
+.bottom-left2 { transform: rotate(90deg); bottom: 45px; left: 0px; }
+.bottom-right1 { transform: rotate(180deg); bottom: 20px; right: 25px; }
+.bottom-right2 { transform: rotate(90deg); bottom: 45px; right: 0px; }
+
+.top-left3 { transform: rotate(180deg); top: 40px; left: 45px; }
+.top-left4 { transform: rotate(90deg); top: 65px; left: 20px; }
+.top-right3 { transform: rotate(180deg); top: 40px; right: 45px; }
+.top-right4 { transform: rotate(90deg); top: 65px; right: 20px; }
+.bottom-left3 { transform: rotate(180deg); bottom: 40px; left: 45px; }
+.bottom-left4 { transform: rotate(90deg); bottom: 65px; left: 20px; }
+.bottom-right3 { transform: rotate(180deg); bottom: 40px; right: 45px; }
+.bottom-right4 { transform: rotate(90deg); bottom: 65px; right: 20px; }
+
 
 /* Second screen lines */
-.second-screen.top-left { top: 10%; left: 10%; width: 100px; height: 20px; }
-.second-screen.top-right { top: 10%; right: 10%; width: 100px; height: 20px; }
-.second-screen.bottom-left { bottom: 10%; left: 10%; width: 100px; height: 20px; }
-.second-screen.bottom-right { bottom: 10%; right: 10%; width: 100px; height: 20px; }
+.flicker {
+  animation: flicker 0.25s;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.hidden-flicker {
+  opacity: 0;
+  animation: flicker .8s;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* end load screen */
 
 
@@ -185,35 +252,67 @@ button:active {
   background-color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  animation: fillScreen 1s;
+  min-width: 0vw;
+  max-width: 0vw;
+  animation: fillScreen 2.4s ease-out;
 }
+
 .left.active {
-  width: 50vw;
   animation: none;
+  min-width: 60vw;
 }
 
 @keyframes fillScreen {
   0% {
+    min-width: 0vw;
+    max-width: 0vw;
+  }
+  50% {
+    min-width: 0vw;
     max-width: 0vw;
   }
   100% {
-    max-width: 50vw;
+    min-width: 60vw;
+    max-width: 60vw;
   }
   
+}
+
+.hidden {
+  display: none;
 }
 
 /* right half of the split screen */
 .right {
   flex: 1;
+  height: 100vh;
   background-color: black;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
+.datetime {
+  position: absolute;
+  text-align: center;
+  top: 4rem;
+}
+
+.date {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 300;
+
+}
+
+.time {
+  margin: 0;
+  font-size: 4rem;
+  font-weight: 300;
+}
 
 /* General styles for the loginForm */
 form.loginForm {
@@ -249,6 +348,7 @@ input[type="email"], input[type="password"] {
 .fadeIn {
   animation: fadeIn 1.2s ;
 }
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -313,8 +413,42 @@ button:hover {
 /* logout form goes in the top right corner */
 form.logOut {
   position: absolute;
-  top: 1rem;
+  bottom: 1rem;
   right: 1rem;
-  padding: 0.5rem;
+  padding: 1rem;
   background-color: black;
+}
+
+.logOutButton {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+}
+
+nav {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.links {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 1rem;
+  transition: all 1s;
+}
+
+.links :hover {
+  cursor: pointer;
+}
+
+
+form h2 {
+  color: black;
+  font-weight: 300;
+  letter-spacing: 2px;
 }

@@ -7,20 +7,9 @@ import { sessionStorage } from "~/services/session.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let user = await auth.authenticate("form", request, {
-    successRedirect: "/home",
     failureRedirect: "/",
-  });
-
-  console.log(user)
-
-  if (user) {
-    return redirect("/home");
-  } else {
-    return redirect("/");
-  }
-
-  // TODO: add animation on success here and redirect to home afterwards
-  
+    successRedirect: "/home",
+  });  
 };
 
 type LoaderError = { message: string } | null;
@@ -51,6 +40,23 @@ export default function Index() {
   return (
     loading
       ? <div className="container">
+          <div className={`corner-line top-left1`}></div>
+          <div className={`corner-line top-left2`}></div>
+          <div className={`corner-line top-left3 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line top-left4 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line top-right1`}></div>
+          <div className={`corner-line top-right2`}></div>
+          <div className={`corner-line top-right3 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line top-right4 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-left1`}></div>
+          <div className={`corner-line bottom-left2`}></div>
+          <div className={`corner-line bottom-left3 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-left4 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-right1`}></div>
+          <div className={`corner-line bottom-right2`}></div>
+          <div className={`corner-line bottom-right3 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-right4 ${screenNumber===1 ? 'flicker' : screenNumber===2 ? 'flicker' : ''}`}></div>
+
           <div 
             className={`circle 
             ${screenNumber === 1 
@@ -64,6 +70,17 @@ export default function Index() {
           </div>
         </div>
       : <div className="container">
+
+          <div className={`corner-line top-left1 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line top-left2 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line top-right1 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line top-right2 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-left1 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-left2 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-right1 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          <div className={`corner-line bottom-right2 ${screenNumber===2 ? 'flicker' : screenNumber===3 ? 'flicker' : ''}`}></div>
+          
+
           <Form className="loginForm" method="post">
             <div 
               className={`circle
