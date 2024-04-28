@@ -3,6 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { act } from "react-dom/test-utils";
+import arrow from "../public/arrow.png";
 
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
@@ -165,6 +166,13 @@ export default function Home() {
             </nav>
             <div className="text-container">
               <TypingAnimation lines={lines} />
+            </div>
+            <div className="arrow-container">
+              <img
+                src={arrow}
+                alt="arrow"
+                className="arrow"
+              />  
             </div>
         </div>
         <div className="right">
