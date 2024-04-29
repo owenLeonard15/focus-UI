@@ -2,8 +2,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { act } from "react-dom/test-utils";
-import arrow from "../public/arrow.png";
+import arrow from "/arrow.png";
 
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
@@ -110,15 +109,17 @@ export default function Home() {
   const { screenNumber, email } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [count, setCount] = useState(screenNumber || 0);
+  const [activeLine, setActiveLine] = useState(0);
+
   
   const currentDate = new Date();
   const currentTime = currentDate.toLocaleTimeString();
 
 
-  const handleIncrement = async (e: any) => {
-    setCount(Number(count) + 1);
-    fetcher.submit(e.target, {method: "post"});
-  }
+  // const handleIncrement = async (e: any) => {
+  //   setCount(Number(count) + 1);
+  //   fetcher.submit(e.target, {method: "post"});
+  // }
 
   useEffect(() => {
     // submit json data to increment screen number
@@ -164,16 +165,29 @@ export default function Home() {
                 <button type="submit">Increment Screen Number {count} </button>
               </Form> */}
             </nav>
-            <div className="text-container">
-              <TypingAnimation lines={lines} />
+            <div className="content-container">
+              <div className="text-container">
+              {count === 0 
+                ? ''
+                :     <TypingAnimation lines={lines} activeLine={activeLine} setActiveLine={setActiveLine} />
+              }
+                
+              </div>
+              <div className="arrow-container">
+                  {activeLine >= lines.length ? 
+                  <>
+                    <img
+                      src={arrow}
+                      alt="arrow"
+                      className="arrow fadeIn"
+                    />  
+                    <h3 className="fadeIn">BEGIN</h3>
+                  </>
+                  : ''
+                  }
+              </div>
             </div>
-            <div className="arrow-container">
-              <img
-                src={arrow}
-                alt="arrow"
-                className="arrow"
-              />  
-            </div>
+
         </div>
         <div className="right">
           {/* display the date in format of "Weekday Month DD, YYYY*/}

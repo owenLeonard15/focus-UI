@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TypingAnimation.css'; // Import the CSS styles
 
-const TypingAnimation = ({ lines }) => {
-  const [activeLine, setActiveLine] = useState(0);
+const TypingAnimation = ({ lines, activeLine, setActiveLine }) => {
 
   useEffect(() => {
     if (activeLine < lines.length) {
