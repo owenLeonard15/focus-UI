@@ -8,7 +8,7 @@ import { sessionStorage } from "~/services/session.server";
 export const action = async ({ request }: ActionFunctionArgs) => {
   let user = await auth.authenticate("form", request, {
     failureRedirect: "/",
-    successRedirect: "/home",
+    successRedirect: "/homeloading",
   });  
 };
 

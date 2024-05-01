@@ -135,7 +135,10 @@ button:active {
 }
 
 .circle.fourth-screen.moveandgrow {
-  animation: moveandgrow 2.4s 1 forwards;
+  /* animation: moveandgrow 2.4s 1 forwards; */
+  width: 400px; 
+  height: 400px; 
+  animation: none;
 }
 
 .circle.circle.fourth-screen.grown {
@@ -421,12 +424,11 @@ form.logOut {
   bottom: 1rem;
   right: 1rem;
   padding: 1rem;
-  background-color: black;
 }
 
 .logOutButton {
-  background-color: black;
   color: white;
+  background-color: transparent;
   border: 1px solid white;
   padding: 0.5rem 1.5rem;
   cursor: pointer;
@@ -497,3 +499,5 @@ form h2:hover {
   padding-left: 1rem;
   vertical-align: text-bottom;
 }
+
+

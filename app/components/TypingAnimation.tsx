@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TypingAnimation.css'; // Import the CSS styles
 
-const TypingAnimation = ({ lines, activeLine, setActiveLine }) => {
+const TypingAnimation = ({ lines, activeLine, setActiveLine }: { lines: string[], activeLine: number, setActiveLine: React.Dispatch<React.SetStateAction<number>> }) => {
 
   useEffect(() => {
     if (activeLine < lines.length) {
