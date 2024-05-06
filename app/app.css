@@ -135,10 +135,7 @@ button:active {
 }
 
 .circle.fourth-screen.moveandgrow {
-  /* animation: moveandgrow 2.4s 1 forwards; */
-  width: 400px; 
-  height: 400px; 
-  animation: none;
+  animation: moveandgrow 1s 1 forwards;
 }
 
 .circle.circle.fourth-screen.grown {
@@ -263,7 +260,7 @@ button:active {
   max-width: 0vw;
   min-height: 100vh;
   flex-wrap: wrap;
-  animation: fillScreen 2.4s ease-out;
+  animation: fillScreen 1.2s ease-out;
 }
 
 .left.active {
@@ -344,7 +341,7 @@ label {
   white-space: nowrap;  /* Prevents the label from wrapping */
 }
 
-input[type="email"], input[type="password"] {
+input[type="email"], input[type="password"], input[type="integration_input"] {
   flex-grow: 1;  /* Allows the input to take up the remaining space */
   padding: 8px;
   font-size: 14px;
@@ -367,7 +364,7 @@ input[type="email"], input[type="password"] {
 }
 
 
-input[type="email"]:focus, input[type="password"]:focus {
+input[type="email"]:focus, input[type="password"]:focus, input[type="integration_input"]:focus{
   outline: none;
 }
 
@@ -433,6 +430,28 @@ form.logOut {
   padding: 0.5rem 1.5rem;
   cursor: pointer;
 }
+
+
+.integrationsButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  max-width: 8rem;
+  padding: 0.5rem 1.5rem;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.integrationsScreen {
+  background-color: black;
+  color: white;
+}
+
+
+
+
+
 
 nav {
   width: 100%;

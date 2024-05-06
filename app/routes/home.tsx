@@ -1,10 +1,7 @@
-// basic hello world component
-import React from 'react';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, json, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, Link, json, redirect, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import TypingAnimation from '~/components/TypingAnimation';
-import { pink } from "@mui/material/colors";
 import arrow from "/arrow.png";
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
@@ -12,11 +9,28 @@ import DateTime from '~/components/DateTime';
 
 
 const lines = [
-    "Hello, welcome to your personal dashboard.",
-    "I am here to help you with your daily activities.",
-    "I can help you with fitness, nutrition, and sleep.",
-  ];
+    "Hello, welcome to your personal dashboard. I am here to help you with your daily activities. I can help you with fitness, nutrition, and sleep.",
+];
 
+
+// function to convert lines to an array of strings each of max length
+function splitLines(lines: string[]) {
+  let splitLines: string[] = [];
+  lines.forEach(line => {
+    let words = line.split(" ");
+    let currentLine = "";
+    words.forEach(word => {
+      if (currentLine.length + word.length <= 50) {
+        currentLine += word + " ";
+      } else {
+        splitLines.push(currentLine);
+        currentLine = word + " ";
+      }
+    });
+    splitLines.push(currentLine);
+  });
+  return splitLines;
+}
 
   export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();
@@ -25,11 +39,7 @@ const lines = [
     
     switch (actionType) {
       case "logOut":
-        // reset the screen number back to 0 when logging out
-        session.set("screenNumber", "0"); // Explicitly unset or reset the screenNumber
-        await sessionStorage.commitSession(session)
         await auth.logout(session, {redirectTo: "/"});
-        
       default:
         // Handle unknown action
         return json({ error: "Unknown action" }, { status: 400 });
@@ -52,10 +62,10 @@ export default function HomeLoaded() {
                   </nav>
                   <div className="content-container">
                     <div className="text-container">
-                        <TypingAnimation lines={lines} activeLine={activeLine} setActiveLine={setActiveLine} />
+                        <TypingAnimation lines={splitLines(lines)} activeLine={activeLine} setActiveLine={setActiveLine} />
                     </div>
                     <div className="arrow-container">
-                        {activeLine >= lines.length ? 
+                        {activeLine >= splitLines(lines).length ? 
                         <>
                           <img
                             src={arrow}
@@ -71,7 +81,6 @@ export default function HomeLoaded() {
       
               </div>
               <div className="right">
-                {/* <IntegrationInstructions style={{color: 'white', width: '20px', zIndex:10, backgroundColor: 'pink'}} sx={{ color: pink[500] , width: '20px'}}  /> */}
                 {/* display the date in format of "Weekday Month DD, YYYY*/}
                 <DateTime />
                
@@ -79,8 +88,9 @@ export default function HomeLoaded() {
                   <input type="hidden" name="_action" value="logOut" />
                   <button className="logOutButton">Log Out</button>
                 </Form>
-                <Form>
-                </Form>
+                <Link to="/integrations">
+                  <button className="integrationsButton">Integrations</button>
+                </Link>
                 <div className="content">
                   <div className={`circle fourth-screen grown`}></div>
                 </div>

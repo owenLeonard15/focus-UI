@@ -2,7 +2,6 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { IntegrationInstructions } from "@mui/icons-material";
 
 
 import { auth } from "~/services/auth.server";
@@ -64,7 +63,7 @@ export default function Home() {
           { method: "POST" }
         )
         navigate("/home")
-      }, 2350);
+      }, 1150);
     } else {
       navigate("/home")
     }
@@ -104,7 +103,7 @@ export default function Home() {
           <Form>
           </Form>
           <div className="content">
-            <div className={`circle fourth-screen ${count === 0 ? 'moveandgrow' : 'grown'}`}></div>
+            <div className={`circle fourth-screen moveandgrow`}></div>
           </div>
         </div> 
       </div>    
