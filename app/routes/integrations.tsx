@@ -25,26 +25,43 @@ import IntegrationsTable from "~/components/IntegrationsTable";
     }
   };
 
-const possibleIntegrationsDB = [
-    "Whoop",
-    "Oura",
-    "Garmin",
-    "Strava"
-]
 
-export default function HomeLoaded() {
-    const [screenNumber, setScreenNumber] = useState(0);
+export default function Integrations() {
 
-        return (
-            <div className='integrationsScreen'>
-                <IntegrationsTable setScreenNumber={function (value: SetStateAction<number>): void {
-                    throw new Error("Function not implemented.");
-                } } />
-                <Form className="logOut" method="post">
-                  <input type="hidden" name="_action" value="logOut" />
-                  <button className="logOutButton">Log Out</button>
-                </Form>
-            </div>
+    const possibleIntegrationsDB = [
+        { integration: "Whoop" },
+        { integration: "Oura" },
+        { integration: "Garmin" },
+        { integration: "Strava" },
+        { integration: "Fitbit" },
+        { integration: "Apple Health" },
+        { integration: "Google Fit" },
+        { integration: "Samsung Health" },
+        { integration: "Polar" },
+        { integration: "Withings" },
+        { integration: "Integration 11" },
+        { integration: "Integration 12" },
+        { integration: "Integration 13" },
+        { integration: "Integration 14" },
+        { integration: "Integration 15" },
+        { integration: "Integration 16" },
+        { integration: "Integration 17" },
+        { integration: "Integration 18" },
+        { integration: "Integration 19" },
+        { integration: "Integration 20" },
+    ];
+
+    return (
+        <div className="integrationsScreen">
+            <IntegrationsTable
+                data={possibleIntegrationsDB}
+                columns={[{ key: "integration", label: "Integration" }]}
+            />
+            <Form className="logOut" method="post">
+                <input type="hidden" name="_action" value="logOut" />
+                <button className="logOutButton">Log Out</button>
+            </Form>
+        </div>
     );
 }
 
