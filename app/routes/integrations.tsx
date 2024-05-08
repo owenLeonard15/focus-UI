@@ -52,16 +52,13 @@ export default function Integrations() {
     ];
 
     return (
-        <div className="integrationsScreen">
-            <IntegrationsTable
-                data={possibleIntegrationsDB}
-                columns={[{ key: "integration", label: "Integration" }]}
-            />
+        <>
+            <IntegrationsTable />
             <Form className="logOut" method="post">
                 <input type="hidden" name="_action" value="logOut" />
                 <button className="logOutButton">Log Out</button>
             </Form>
-        </div>
+        </>
     );
 }
 

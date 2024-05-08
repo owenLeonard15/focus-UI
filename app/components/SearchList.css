@@ -1,0 +1,35 @@
+
+/* SearchList content should be scrollable */
+/* list should not have bullets */
+.search-list ul {
+    overflow-y: scroll;
+    height: 130px;
+    list-style-type: none;
+    text-align: left;
+    padding-left: 0;
+    cursor: pointer;
+}
+
+.search-list input {
+    position: relative;
+    top: 0;
+    border-radius: 2px;
+}
+
+.search-list input:focus {
+    outline: none;
+}
+
+li {
+    padding: 10px 5px;
+    border-radius: 2px;
+    border-bottom: 1px solid #ccc;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+li:hover {
+    background-color: #2d2d2d;
+}

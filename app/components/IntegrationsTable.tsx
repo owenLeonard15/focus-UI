@@ -1,259 +1,55 @@
-import type { FC } from 'react';
+import { Form } from '@remix-run/react';
+import SearchList from './SearchList';
 import './IntegrationsTable.css';
 
-interface TableProps {
-  data: Array<{ [key: string]: any }>; // Assuming data is an array of objects
-  columns: Array<{ key: string; label: string }>; // Define columns to be displayed
-}
+const integrations = [
+    { name: 'WHOOP', status: 'connected', active: true },
+    { name: 'Oura', status: 'disconnected', active: true },
+    { name: 'Strava', status: 'connected', active: false },
+    { name: 'Garmin', status: 'connected',  active: false },
+    { name: 'Eight Sleep', status: 'connected',  active: false },
+    { name: 'Coros', status: 'disconnected', active: false },
+    { name: 'Apple Health', status: 'connected',  active: false },
+    { name: 'Google Fit', status: 'disconnected', active: false },
+    { name: 'Samsung Health', status: 'disconnected', active: false },
+    { name: 'Polar', status: 'disconnected', active: false },
+    { name: 'Withings', status: 'disconnected', active: false }
+];
 
-const IntegrationsTable: FC<TableProps> = ({ data, columns }) => {
-  // A simple table component that renders rows based on provided data and columns
+const IntegrationBox = ({ name, status }: { name: string, status: string }) => {
+    return (
+        <div className="integration-box">
+            <div className="logo">{name}</div>
+            {status === "add" ? 
+                // Form to add a new integration including search bar and live updating search results
+                <SearchList items={integrations.filter(integration => !integration.active).map((integration) => integration.name)} />
+             : 
+                (
+                <>
+                    <div className={`status ${status}`}><div className='bold white'>status:&nbsp; </div>{`${status}`}</div>
+                        {status === 'connected' ? <button className="modify">Modify Permissions</button> : (
+                            <>
+                                <button className="reconnect">Reconnect</button>
+                                <button className="remove">Remove</button>
+                            </>
+                        )} 
+                </> 
+                )
+            }
+        </div>
+    );
+};
+
+const IntegrationsTable = () => {
   return (
-    <div className="table-container">
-        <h1>Fixed Table header</h1>
-        <div className="tbl-header">
-            <table cellPadding="0" cellSpacing="0" border={0}>
-            <thead>
-                <tr>
-                <th>Code</th>
-                <th>Company</th>
-                <th>Price</th>
-                <th>Change</th>
-                <th>Change %</th>
-                </tr>
-            </thead>
-            </table>
-        </div>
-        <div className="tbl-content">
-            <table cellPadding="0" cellSpacing="0" border={0}>
-            <tbody>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-                <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-                </tr>
-                <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-                </tr>
-                <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-                </tr>
-                <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-                </tr>
-            </tbody>
-            </table>
-        </div>
+    <div className="integrations-container">
+      <h1>INTEGRATIONS</h1>
+      <div className="grid">
+        {integrations.map((integration, index) => (
+          <IntegrationBox key={index} name={integration.name} status={integration.status} />
+        ))}
+        <IntegrationBox key={-1} name={"Add Integration"} status={"add"} />
+      </div>
     </div>
   );
 };
