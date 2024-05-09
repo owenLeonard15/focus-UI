@@ -9,7 +9,7 @@
   
   h1 {
     text-align: center;
-    font-weight: normal;
+    font-weight: lighter;
     color: white;
     margin-bottom: 20px;
   }
@@ -82,7 +82,7 @@
   }
   
   /* logout form goes in the top right corner */
-form.logOut {
+form.logOutIntegrations {
     position: absolute;
     top: 1rem;
     right: 1rem;

@@ -34,8 +34,8 @@ body {
   align-items: center;
 }
 textarea,
-input,
-button {
+input
+ {
   font-size: 1rem;
   font-family: inherit;
   border: none;
@@ -52,13 +52,7 @@ input:hover
   box-shadow: 0 0px 1px hsla(0, 0%, 0%, 0.6), 0 1px 2px hsla(0, 0%, 0%, 0.2);
 }
 
-button:hover {
-  cursor: pointer;
-}
-button:active {
-  box-shadow: 0 0px 1px hsla(0, 6%, 97%, 0.4);
-  transform: translateY(1px);
-}
+
 
 /* load screen */
 .container {

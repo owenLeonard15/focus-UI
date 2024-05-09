@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form } from '@remix-run/react';
 import './SearchList.css';
 
+
 const SearchList = ({ items }: { items: string[] }) => {
   const [query, setQuery] = useState('');
 
@@ -15,7 +16,6 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className="search-list">
-      <Form method="get" reloadDocument>
         <input
           type="text"
           name="search"
@@ -25,10 +25,14 @@ const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         />
         <ul>
           {filteredItems.map((item, index) => (
-            <li key={index}>{item}</li>
+            <Form key={index} method="post">
+              <div >
+                <input type="hidden" name="_action" value={`integration.${item}`} />
+                <button onClick={() => console.log(item)} className="integrationsSearch" key={index}>{item}</button>
+              </div>
+            </Form>
           ))}
         </ul>
-      </Form>
     </div>
   );
 };

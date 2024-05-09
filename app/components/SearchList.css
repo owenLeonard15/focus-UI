@@ -20,16 +20,16 @@
     outline: none;
 }
 
-li {
+button.integrationsSearch  {
     padding: 10px 5px;
     border-radius: 2px;
-    border-bottom: 1px solid #ccc;
+    width: 95%;
 }
 
-li:last-child {
+button:last-child.integrationsSearch  {
     border-bottom: none;
 }
 
-li:hover {
+.integrationsSearch button:hover {
     background-color: #2d2d2d;
 }

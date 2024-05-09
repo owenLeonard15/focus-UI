@@ -4,6 +4,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
 import IntegrationsTable from "~/components/IntegrationsTable";
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 
 
@@ -18,6 +19,10 @@ import IntegrationsTable from "~/components/IntegrationsTable";
         session.set("screenNumber", "0"); // Explicitly unset or reset the screenNumber
         await sessionStorage.commitSession(session)
         await auth.logout(session, {redirectTo: "/"});
+    case "integration.Whoop":
+        // Handle integration.Whoop action
+        console.log("Integration Whoop");
+        return json ({}, {status: 200});
         
       default:
         // Handle unknown action
@@ -54,7 +59,7 @@ export default function Integrations() {
     return (
         <>
             <IntegrationsTable />
-            <Form className="logOut" method="post">
+            <Form className="logOutIntegrations" method="post">
                 <input type="hidden" name="_action" value="logOut" />
                 <button className="logOutButton">Log Out</button>
             </Form>

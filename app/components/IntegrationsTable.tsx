@@ -1,10 +1,11 @@
 import { Form } from '@remix-run/react';
 import SearchList from './SearchList';
 import './IntegrationsTable.css';
+import { ActionFunctionArgs } from '@remix-run/node';
 
 const integrations = [
-    { name: 'WHOOP', status: 'connected', active: true },
-    { name: 'Oura', status: 'disconnected', active: true },
+    { name: 'Whoop', status: 'connected', active: false },
+    { name: 'Oura', status: 'disconnected', active: false },
     { name: 'Strava', status: 'connected', active: false },
     { name: 'Garmin', status: 'connected',  active: false },
     { name: 'Eight Sleep', status: 'connected',  active: false },
@@ -15,6 +16,7 @@ const integrations = [
     { name: 'Polar', status: 'disconnected', active: false },
     { name: 'Withings', status: 'disconnected', active: false }
 ];
+
 
 const IntegrationBox = ({ name, status }: { name: string, status: string }) => {
     return (
@@ -46,7 +48,7 @@ const IntegrationsTable = () => {
       <h1>INTEGRATIONS</h1>
       <div className="grid">
         {integrations.map((integration, index) => (
-          <IntegrationBox key={index} name={integration.name} status={integration.status} />
+            integration.active && <IntegrationBox key={index} name={integration.name} status={integration.status} />
         ))}
         <IntegrationBox key={-1} name={"Add Integration"} status={"add"} />
       </div>
