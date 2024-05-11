@@ -4,7 +4,6 @@ import { SetStateAction, useEffect, useState } from "react";
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
 import IntegrationsTable from "~/components/IntegrationsTable";
-import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 
 
@@ -22,6 +21,8 @@ import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
     case "integration.Whoop":
         // Handle integration.Whoop action
         console.log("Integration Whoop");
+        // navigate to the OAuth page for Whoop
+        
         return json ({}, {status: 200});
         
       default:
