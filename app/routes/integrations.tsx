@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, json, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, json, redirect, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { SetStateAction, useEffect, useState } from "react";
 import { auth } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
@@ -19,11 +19,11 @@ import IntegrationsTable from "~/components/IntegrationsTable";
         await sessionStorage.commitSession(session)
         await auth.logout(session, {redirectTo: "/"});
     case "integration.Whoop":
-        // Handle integration.Whoop action
-        console.log("Integration Whoop");
-        // navigate to the OAuth page for Whoop
-        
-        return json ({}, {status: 200});
+      // Handle integration.Whoop action
+      console.log("Integration Whoop");
+      // redirect to the OAuth page for Whoop integration
+      return redirect("http://localhost:8080/api/auth/whoop");
+
         
       default:
         // Handle unknown action

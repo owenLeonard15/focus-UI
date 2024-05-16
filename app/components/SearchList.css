@@ -4,10 +4,22 @@
 .search-list ul {
     overflow-y: scroll;
     height: 130px;
+    width: 100%;
     list-style-type: none;
     text-align: left;
-    padding-left: 0;
+    padding: 0;
     cursor: pointer;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(193, 193, 193, 0.5) transparent;
+
+}
+
+
+.search-list:hover {
+    scrollbar-width: thin; /* Show scrollbar on hover */
+    overflow: auto;
+    scrollbar-color: rgba(230, 230, 230, 0.5) transparent;
 }
 
 .search-list input {
@@ -21,7 +33,7 @@
 }
 
 button.integrationsSearch  {
-    padding: 10px 5px;
+    padding: 10px 0px;
     border-radius: 2px;
     width: 95%;
 }
