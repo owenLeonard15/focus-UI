@@ -117,6 +117,22 @@ input:hover
   animation: none;
 }
 
+.circle.username-position {
+  width: 30px; /* Small circle size after click */
+  height: 30px; /* Small circle size after click */
+  /* move to the left 200px and stay there*/
+  transform: translate(-50px, 166px);
+  animation: none;
+}
+
+.circle.password-position {
+  width: 30px; /* Small circle size after click */
+  height: 30px; /* Small circle size after click */
+  /* move to the left 200px and stay there*/
+  transform: translate(-50px, 222px);
+  animation: none;
+}
+
 .circle.fourth-screen {
   width: 30px; 
   height: 30px; 
@@ -335,7 +351,7 @@ label {
   white-space: nowrap;  /* Prevents the label from wrapping */
 }
 
-input[type="email"], input[type="password"], input[type="integration_input"] {
+input[type="firstName"], input[type="lastName"], input[type="email"], input[type="password"], input[type="integration_input"] {
   flex-grow: 1;  /* Allows the input to take up the remaining space */
   padding: 8px;
   font-size: 14px;
@@ -358,7 +374,7 @@ input[type="email"], input[type="password"], input[type="integration_input"] {
 }
 
 
-input[type="email"]:focus, input[type="password"]:focus, input[type="integration_input"]:focus{
+input[type="firstName"]:focus, input[type="lastName"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="integration_input"]:focus{
   outline: none;
 }
 
@@ -386,6 +402,15 @@ button:hover {
   color: black;
 }
 
+.arrow-text {
+  border: none;
+}
+
+.arrow-text:hover {
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+}
 /* end new additions */
 
 
