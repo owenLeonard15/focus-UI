@@ -22,7 +22,6 @@ import IntegrationsTable from "~/components/IntegrationsTable";
       // Handle integration.Whoop action
       console.log("Integration Whoop");
       // redirect to the OAuth page for Whoop integration
-
       return redirect("http://localhost:8080/api/auth/whoop?userId=${userId}");
 
         

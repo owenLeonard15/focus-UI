@@ -2,43 +2,46 @@ import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { sessionStorage } from "./session.server";
 import { OAuth2Profile, OAuth2Strategy } from "remix-auth-oauth2";
-import { CognitoIdentityProviderClient, InitiateAuthCommand, SignUpCommand, ConfirmSignUpCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { 
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand, 
+  SignUpCommand, 
+  ConfirmSignUpCommand, 
+  AuthFlowType, 
+  ResendConfirmationCodeCommand
+} from "@aws-sdk/client-cognito-identity-provider";
 import config from "../config.json";
+import crypto from 'crypto';
+import { User } from "~/models/User";
 
 export const cognitoClient = new CognitoIdentityProviderClient({
   region: config.region,
 });
 
-export const auth = new Authenticator<string>(sessionStorage);
+export const auth = new Authenticator<User>(sessionStorage);
 
 auth.use(
   new FormStrategy(async ({ form }) => {
     
     const email = form.get("email");
     const password = form.get("password");
-    const actionType = form.get("_action");
-    console.log("actionType: ", actionType);
 
-    switch (actionType) {
-      case "signUp":
-        const firstName = form.get("firstName");
-        const lastName = form.get("lastName");
-
-        if (!firstName) throw new AuthorizationError("First Name is required");
-        if (!lastName) throw new AuthorizationError("Last Name is required");
-        if (!email) throw new AuthorizationError("Email is required");
-        if (!password) throw new AuthorizationError("Password is required");
-        console.log(firstName, lastName, email, password)
-        const res = await handleSignUp(email, password, firstName, lastName);
-        // console.log(userId, isSignUpComplete, nextStep);
-        return email as string;
-      case "signIn":
-        if (!email) throw new AuthorizationError("Email is required");
-        if (!password) throw new AuthorizationError("Password is required");
-        return email as string;
-      default:
-        console.log("default");
-        return email as string;
+    if (!email) throw new AuthorizationError("Email is required");
+    if (!password) throw new AuthorizationError("Password is required");
+    let signInRes = await handleSignIn(email, password);
+    // TODO: handle case where the user is not confirmed
+    if (signInRes?.IdToken) {
+      return new User(
+        signInRes?.IdToken as string,
+        email as string,
+        password as string,
+        true,
+        new Date(),
+        new Date()
+      );
+    }
+    else {
+      throw new AuthorizationError("Invalid credentials");
     }
   }),
 ).use(
@@ -82,25 +85,29 @@ function getUser(accessToken: string, refreshToken: string | undefined, extraPar
 
 // Sign Up
 export async function handleSignUp(email: any, password: any, firstName: any, lastName: any) {
+  const username = getUsernameFromEmail(email);
+  const secretHash = generateSecretHash(username, config.clientId, config.clientSecret)
   const params = {
     ClientId: config.clientId,
-    Username: email,
+    Username: username,
     Password: password,
+    SecretHash: secretHash,
     UserAttributes: [
       {
         Name: "email",
         Value: email,
       },
       {
-        Name: "first_name",
+        Name: "given_name",
         Value: firstName,
       },
       {
-        Name: "last_name",
+        Name: "family_name",
         Value: lastName,
       }
     ],
   };
+
   try {
     const command = new SignUpCommand(params);
     const response = await cognitoClient.send(command);
@@ -112,16 +119,21 @@ export async function handleSignUp(email: any, password: any, firstName: any, la
   }
 }
 
+
 // Sign In
-async function handleSignIn(username: any, password: any) {
+async function handleSignIn(email: any, password: any) {
+  const username = getUsernameFromEmail(email);
+  const secretHash = generateSecretHash(username, config.clientId, config.clientSecret);
   const params = {
-    AuthFlow: "USER_PASSWORD_AUTH",
+    AuthFlow: "USER_PASSWORD_AUTH" as AuthFlowType,
     ClientId: config.clientId,
     AuthParameters: {
       USERNAME: username,
       PASSWORD: password,
+      SECRET_HASH: secretHash,
     },
   };
+
   try {
     const command = new InitiateAuthCommand(params);
     const { AuthenticationResult } = await cognitoClient.send(command);
@@ -137,33 +149,71 @@ async function handleSignIn(username: any, password: any) {
   }
 }
 
-// Sign Out
-async function handleSignOut() {
-  // sessionStorage.removeItem("idToken");
-  // sessionStorage.removeItem("accessToken");
-  // sessionStorage.removeItem("refreshToken");
-  return;
-}
 
-// Update session with user data
-export async function updateUserSession(session: any, user: any) {
-  session.set("user", user);
-  return session.commit();
-}
-
-export const confirmSignUp = async (username: string, code: string) => {
+// Confirm Sign Up
+export const confirmSignUp = async (email: string, code: string) => {
+  const username = getUsernameFromEmail(email);
+  const secretHash = generateSecretHash(username, config.clientId, config.clientSecret);
   const params = {
     ClientId: config.clientId,
     Username: username,
     ConfirmationCode: code,
+    SecretHash: secretHash
   };
+
   try {
+    console.log("Confirming sign up: ", params);
     const command = new ConfirmSignUpCommand(params);
     await cognitoClient.send(command);
     console.log("User confirmed successfully");
     return true;
-  } catch (error) {
-    console.error("Error confirming sign up: ", error);
-    throw error;
+  } catch (error: any) {
+    if (error.name === 'ExpiredCodeException') {
+      // TODO: add error messaging to the user here
+      console.log("Code expired, resending code");
+      // resend code
+      await resendConfirmationCode(email);
+      return false;
+    } else {
+      console.error("Error confirming sign up: ", error);
+      throw error;
+    }
   }
 };
+
+
+function generateSecretHash(username: string, clientId: string, clientSecret: string) {
+  const message = username + clientId;
+  const hmac = crypto.createHmac('sha256', clientSecret);
+  hmac.update(message);
+  return hmac.digest('base64');
+}
+
+
+const resendConfirmationCode = async (email: string) => {
+  const username = getUsernameFromEmail(email);
+  const secretHash = generateSecretHash(username, config.clientId, config.clientSecret);
+  const params = {
+    ClientId: config.clientId,
+    Username: email,
+    SecretHash: secretHash
+  };
+
+  try {
+    const command = new ResendConfirmationCodeCommand(params);
+    await cognitoClient.send(command);
+    return true;
+  } catch (error: any) {
+    console.error("Error resending confirmation code: ", error);
+    throw error;
+  }
+  
+}
+
+// given an email, return a unique username
+function getUsernameFromEmail (email: string) {
+  const hash = crypto.createHash('sha256');
+  hash.update(email);
+  const res = hash.digest('hex');
+  return res;
+}

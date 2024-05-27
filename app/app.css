@@ -351,13 +351,23 @@ label {
   white-space: nowrap;  /* Prevents the label from wrapping */
 }
 
-input[type="firstName"], input[type="lastName"], input[type="email"], input[type="password"], input[type="integration_input"] {
+input[type="firstName"], input[type="lastName"], input[type="email"], input[type="password"], input[type="integration_input"], input[type="confirmationCode"] {
   flex-grow: 1;  /* Allows the input to take up the remaining space */
   padding: 8px;
   font-size: 14px;
   color:black;
   background-color: #f9f9f9;
   border-radius: 20px;
+  width: 100%;
+}
+
+input[type="confirmationCode"] {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.inputText {
+  margin-left: 15px;
 }
 
 .fadeIn {
