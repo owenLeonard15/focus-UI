@@ -2,8 +2,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, useLoaderData, useNavigate } from "@remix-run/react";
 import { useState } from "react";
-import { auth, handleSignUp } from "~/services/auth.server";
-import { sessionStorage } from "~/services/session.server";
+import { auth, handleSignUp, getUserFromCognito } from "~/services/auth.server";
+import { commitSession, sessionStorage } from "~/services/session.server";
 
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -12,8 +12,53 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const password = formData.get("password") as string;
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
-    await handleSignUp(email, password, firstName, lastName);
-    return redirect("/confirmuser");
+
+    // check fields are not empty
+    if (!email || !password || !firstName || !lastName) {
+      const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+      session.flash(auth.sessionErrorKey, { message: "Please fill out all fields" });
+      return redirect("/register", {
+          headers: {
+            "Set-Cookie": await sessionStorage.commitSession(session),
+          },
+      });
+    }
+
+    try {
+      await handleSignUp(email, password, firstName, lastName);
+      const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+          session.flash(auth.sessionErrorKey, { message: "Check your email for a confirmation code" });
+          return redirect("/confirmuser", {
+              headers: {
+                "Set-Cookie": await sessionStorage.commitSession(session),
+              },
+          });
+    } catch (error: any) {
+      if (error.name === 'UsernameExistsException') {
+        // if user is confirmed, redirect to login page
+        const user = await getUserFromCognito(email);
+        if (user && user.UserStatus === 'CONFIRMED') {
+          const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+          session.flash(auth.sessionErrorKey, { message: "User already exists for the entered email" });
+          return redirect("/login", {
+              headers: {
+                "Set-Cookie": await sessionStorage.commitSession(session),
+              },
+          });
+        } else {        
+          // if user is not confirmed, redirect to confirm user page
+          const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+          session.flash(auth.sessionErrorKey, { message: "Check your email for a confirmation code" });
+          return redirect("/confirmuser", {
+              headers: {
+                "Set-Cookie": await sessionStorage.commitSession(session),
+              },
+          });
+        }
+      }
+      
+    }
+    
 };
 
 type LoaderError = { message: string } | null;
@@ -23,10 +68,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     request.headers.get("Cookie"),
   );
   const error = session.get(auth.sessionErrorKey) as LoaderError;
-  return json({ error });
+  return json({ error }, {
+    headers:{
+      'Set-Cookie': await commitSession(session) 
+    }
+  });
 };
 
-export default function Index() {
+export default function Register() {
   const navigate = useNavigate();
   const { error } = useLoaderData<typeof loader>();
   const [screenNumber, setScreenNumber] = useState(2);
@@ -112,7 +161,7 @@ export default function Index() {
           </div>
           
 
-          {error ? <div>{error.message}</div> : null}
+          {error ? <div className="error-message">{error.message}</div> : null}
           <div className="buttonColumn">
             <button className='fadeIn arrow-text' type="button" onClick={() => handleReturnToLogin()}> &#8592; Log In</button>
             <button name="_action" value="signUp"  className='fadeIn'>Register</button>

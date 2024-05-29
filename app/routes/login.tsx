@@ -3,12 +3,12 @@ import { json } from "@remix-run/node";
 import { Form, useNavigate, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { auth } from "~/services/auth.server";
-import { sessionStorage } from "~/services/session.server";
+import { commitSession, sessionStorage } from "~/services/session.server";
 
 
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    let user = await auth.authenticate("form", request, {
+    await auth.authenticate("form", request, {
         failureRedirect: "/login",
         successRedirect: "/homeloading",
       });
@@ -21,7 +21,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     request.headers.get("Cookie"),
   );
   const error = session.get(auth.sessionErrorKey) as LoaderError;
-  return json({ error });
+  return json({ error }, {
+    headers:{
+      'Set-Cookie': await commitSession(session) 
+    }
+  });
 };
 
 export default function Index() {
@@ -114,7 +118,7 @@ export default function Index() {
                 style={{paddingLeft: '15px'}}
               />
             </div>
-            {error ? <div>{error.message}</div> : null}
+            {error ? <div className="error-message">{error.message}</div> : null}
             <div className="buttonColumn">
               <button name="_action" value="signIn" className='fadeIn'>Log In</button>
               <button className='fadeIn arrow-text' type="button" onClick={() => handleRegisterAnimation()}>Register &#8594;</button>

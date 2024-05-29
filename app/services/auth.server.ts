@@ -1,9 +1,10 @@
 import { Authenticator, AuthorizationError } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
-import { sessionStorage } from "./session.server";
+import { sessionStorage, getSession, commitSession} from "./session.server";
 import { OAuth2Profile, OAuth2Strategy } from "remix-auth-oauth2";
 import { 
   CognitoIdentityProviderClient,
+  AdminGetUserCommand,
   InitiateAuthCommand, 
   SignUpCommand, 
   ConfirmSignUpCommand, 
@@ -110,10 +111,9 @@ export async function handleSignUp(email: any, password: any, firstName: any, la
 
   try {
     const command = new SignUpCommand(params);
-    const response = await cognitoClient.send(command);
-    console.log("Sign up success: ", response);
-    return response;
-  } catch (error) {
+    await cognitoClient.send(command);
+    return "success";
+  } catch (error: any) { 
     console.error("Error signing up: ", error);
     throw error;
   }
@@ -195,7 +195,7 @@ const resendConfirmationCode = async (email: string) => {
   const secretHash = generateSecretHash(username, config.clientId, config.clientSecret);
   const params = {
     ClientId: config.clientId,
-    Username: email,
+    Username: username,
     SecretHash: secretHash
   };
 
@@ -216,4 +216,25 @@ function getUsernameFromEmail (email: string) {
   hash.update(email);
   const res = hash.digest('hex');
   return res;
+}
+
+// get user from cognito
+export const getUserFromCognito = async (email: string) => {
+  const secretHash = generateSecretHash(email, config.clientId, config.clientSecret);
+  const params = {
+    UserPoolId: config.userPoolId,
+    SecretHash: secretHash,
+    Username: email,
+  };
+
+  const command = new AdminGetUserCommand(params);
+  try {
+    const res = await cognitoClient.send(command);
+    return res;
+  } catch (error: any) {
+    if (error.name === 'UserNotFoundException') {
+      console.log("User not found");
+      return null;
+    }
+  }
 }

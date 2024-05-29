@@ -366,10 +366,6 @@ input[type="confirmationCode"] {
   width: 100%;
 }
 
-.inputText {
-  margin-left: 15px;
-}
-
 .fadeIn {
   animation: fadeIn 1.2s ;
 }
@@ -540,5 +536,8 @@ form h2:hover {
   vertical-align: text-bottom;
 }
 
-
+.error-message {
+  text-overflow: wrap;
+  max-width: 200px;
+}
 /* Integrations Screen */

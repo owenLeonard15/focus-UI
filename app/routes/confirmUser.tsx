@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { auth, confirmSignUp } from '~/services/auth.server';
 import { Form, useNavigate, useLoaderData } from "@remix-run/react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { sessionStorage, commitSession } from '~/services/session.server';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   console.log("Request: ", request)
@@ -20,7 +21,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
+type LoaderError = { message: string } | null;
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  await auth.isAuthenticated(request, { successRedirect: "/home" });
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie"),
+  );
+  const error = session.get(auth.sessionErrorKey) as LoaderError;
+  return json({ error }, {
+    headers:{
+      'Set-Cookie': await commitSession(session) 
+    }
+  });
+};
+
 const ConfirmUser = () => {
+  const { error } = useLoaderData<typeof loader>();
+
 
   return (
     <div className="loginForm">
@@ -42,6 +59,7 @@ const ConfirmUser = () => {
             name="confirmationCode"
             placeholder="confirmation code"
             required />
+          {error ? <div className='error-message'>{error.message}</div> : null}
         </div>
         <button name="_action">Confirm Account</button>
       </Form>
