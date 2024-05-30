@@ -10,14 +10,35 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const confirmationCode = formData.get("confirmationCode") as string;
-  const res = await confirmSignUp(email, confirmationCode);
+  // validate fields
+  if (!email || !confirmationCode) {
+    const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+    session.flash(auth.sessionErrorKey, { message: "Please fill out all fields" });
+    return redirect("/confirmuser", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  }
 
-  // if successful, redirect to login page otherwise stay on the page
-  if (res) {
-    return redirect("/login");
-  } else {
-    // TODO: add error messaging to the user
-    return redirect("/confirmuser");
+  try {
+    await confirmSignUp(email, confirmationCode);
+    const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+    session.flash(auth.sessionErrorKey, { message: "User confirmed. Please log in." });
+    return redirect("/login", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+
+  } catch (error: any) {
+    const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+    session.flash(auth.sessionErrorKey, { message: error.message });
+    return redirect("/confirmuser", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   }
 };
 
@@ -37,33 +58,48 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 const ConfirmUser = () => {
   const { error } = useLoaderData<typeof loader>();
+  const [screenNumber, setScreenNumber] = useState(2);
 
 
-  return (
-    <div className="loginForm">
-      <h2>Confirm Account</h2>
-      <Form method='post'>
-        <div>
-          <input
-            className="inputText"
-            type="email"
-            name="email"
-            placeholder="email"
-            required
-          />
-        </div>
-        <div>
-          <input
-            className="inputText"
+  return ( 
+    <div className="container">
+      <Form className="loginForm fadeIn" method="post">
+      <div 
+        className={`circle
+          ${screenNumber === 2 
+            ? 'second-screen' 
+            : screenNumber === 3
+            ? 'third-screen'
+            : ''
+          }`
+        }
+      >
+      </div>
+      <div>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          onFocus={() => setScreenNumber(2)}
+          placeholder="email"
+        />
+      </div>
+      <div>
+         <input
             type="confirmationCode"
             name="confirmationCode"
+            id="confirmationCode"
             placeholder="confirmation code"
-            required />
-          {error ? <div className='error-message'>{error.message}</div> : null}
-        </div>
+            onFocus={() => setScreenNumber(3)}
+          />
+      </div>
+      {error ? <div className='error-message'>{error.message}</div> : null}
+      <div className="buttonColumn">
+        {/* <button className='fadeIn arrow-text' type="button" onClick={() => handleReturnToLogin()}> &#8592; Log In</button> */}
         <button name="_action">Confirm Account</button>
-      </Form>
-    </div>
+      </div>
+      </Form>          
+    </div> 
   );
 
 };

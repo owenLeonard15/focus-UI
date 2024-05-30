@@ -23,30 +23,42 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           },
       });
     }
+    // validate password
+    const descriptive_message = validatePassword(password);
+    if (descriptive_message) {
+      const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+      session.flash(auth.sessionErrorKey, { message: descriptive_message || "Password is invalid"});
+      return redirect("/register", {
+          headers: {
+            "Set-Cookie": await sessionStorage.commitSession(session),
+          },
+      });
+    }
+    
 
     try {
       await handleSignUp(email, password, firstName, lastName);
       const session = await sessionStorage.getSession(request.headers.get("Cookie"));
-          session.flash(auth.sessionErrorKey, { message: "Check your email for a confirmation code" });
-          return redirect("/confirmuser", {
-              headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session),
-              },
-          });
+      session.flash(auth.sessionErrorKey, { message: "Check your email for a confirmation code" });
+      return redirect("/confirmuser", {
+          headers: {
+            "Set-Cookie": await sessionStorage.commitSession(session),
+          },
+      });
     } catch (error: any) {
       if (error.name === 'UsernameExistsException') {
         // if user is confirmed, redirect to login page
         const user = await getUserFromCognito(email);
         if (user && user.UserStatus === 'CONFIRMED') {
           const session = await sessionStorage.getSession(request.headers.get("Cookie"));
-          session.flash(auth.sessionErrorKey, { message: "User already exists for the entered email" });
+          session.flash(auth.sessionErrorKey, { message: "User already exists for " + email });
           return redirect("/login", {
               headers: {
                 "Set-Cookie": await sessionStorage.commitSession(session),
               },
           });
         } else {        
-          // if user is not confirmed, redirect to confirm user page
+          // if user exists but is not confirmed, redirect to confirm user page
           const session = await sessionStorage.getSession(request.headers.get("Cookie"));
           session.flash(auth.sessionErrorKey, { message: "Check your email for a confirmation code" });
           return redirect("/confirmuser", {
@@ -55,10 +67,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
               },
           });
         }
-      }
-      
+      } else {
+        const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+        session.flash(auth.sessionErrorKey, { message: "An error occurred: " + error.message || "Unknown error"});
+        return redirect("/register", {
+            headers: {
+              "Set-Cookie": await sessionStorage.commitSession(session),
+            },
+        });
+      } 
     }
-    
 };
 
 type LoaderError = { message: string } | null;
@@ -169,4 +187,31 @@ export default function Register() {
         </Form>          
         </div> 
   );
+}
+
+
+
+function validatePassword(password: string): string | null {
+  const minLength = 8;
+  const numberRegex = /\d/;
+  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  const uppercaseRegex = /[A-Z]/;
+  const lowercaseRegex = /[a-z]/;
+
+  if (password.length < minLength) {
+    return `Password must be at least ${minLength} characters long.`;
+  }
+  if (!numberRegex.test(password)) {
+    return 'Password must contain at least 1 number.';
+  }
+  if (!specialCharRegex.test(password)) {
+    return 'Password must contain at least 1 special character.';
+  }
+  if (!uppercaseRegex.test(password)) {
+    return 'Password must contain at least 1 uppercase letter.';
+  }
+  if (!lowercaseRegex.test(password)) {
+    return 'Password must contain at least 1 lowercase letter.';
+  }
+  return null; // Password is valid
 }

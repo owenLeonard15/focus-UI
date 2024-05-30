@@ -330,7 +330,7 @@ input:hover
 }
 
 /* General styles for the loginForm */
-form.loginForm {
+form.loginForm{
   width: 290px;
   margin: 40px auto;
   padding: 20px;
@@ -353,16 +353,11 @@ label {
 
 input[type="firstName"], input[type="lastName"], input[type="email"], input[type="password"], input[type="integration_input"], input[type="confirmationCode"] {
   flex-grow: 1;  /* Allows the input to take up the remaining space */
-  padding: 8px;
+  padding: 8px 15px;
   font-size: 14px;
   color:black;
   background-color: #f9f9f9;
   border-radius: 20px;
-  width: 100%;
-}
-
-input[type="confirmationCode"] {
-  margin: 20px 0;
   width: 100%;
 }
 
@@ -380,7 +375,7 @@ input[type="confirmationCode"] {
 }
 
 
-input[type="firstName"]:focus, input[type="lastName"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="integration_input"]:focus{
+input[type="firstName"]:focus, input[type="lastName"]:focus, input[type="email"]:focus, input[type="password"]:focus, input[type="integration_input"]:focus, input[type="confirmationCode"]:focus {
   outline: none;
 }
 
@@ -536,8 +531,11 @@ form h2:hover {
   vertical-align: text-bottom;
 }
 
+
 .error-message {
-  text-overflow: wrap;
-  max-width: 200px;
+  overflow: wrap;
+  text-align: center;
+  width: 100%;
+  justify-content: center;
 }
 /* Integrations Screen */
